@@ -1,5 +1,5 @@
 [![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/)
-[![GitHub license](https://img.shields.io/github/license/bertek41/HospitalAppointment.svg)](https://github.com/bertek41/HospitalAppointment/blob/master/LICENSE)
+[![GitHub license](https://img.shields.io/github/license/bertek41/HospitalAppointment.svg)](https://github.com/bertek41/HospitalAppointment/blob/main/LICENSE)
 
 # Hospital Appointment
 
