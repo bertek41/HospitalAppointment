@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load django_bootstrap5 %}
+
+<head>
+    {% block title %}Hastane Randevu - Kayıt Ol{% endblock %}
+</head>
+
+{% block content %}
+    <div>
+        <h2>Kayıt ol</h2>
+        {{ form.media }}
+        <span class="text-danger">{{ error }}</span>
+        <form class="row g-3 needs-validation" method="post" novalidate>
+            {% csrf_token %}
+            {% for field in form %}
+                {% bootstrap_field field %}
+            {% endfor %}
+            {% bootstrap_button button_type="submit" content="Kayıt Ol" %}
+            {% bootstrap_button button_type="reset" content="İptal" %}
+        </form>
+        <script src="https://unpkg.com/bootstrap-show-password@1.2.1/dist/bootstrap-show-password.min.js"></script>
+    </div>
+{% endblock %}

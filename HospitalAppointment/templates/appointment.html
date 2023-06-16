@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% load django_bootstrap5 %}
+
+<head>
+    {% block title %}Hastane Randevu - Randevularım{% endblock %}
+</head>
+
+{% block content %}
+    <h1>Randevu Listesi</h1>
+    {% if appointments %}
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">Doktor</th>
+                <th scope="col">Tarih ve Saat</th>
+                <th scope="col">İptal Et</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for appointment in appointments %}
+                <tr>
+                    <td>{{ appointment.doctor }}</td>
+                    <td>{{ appointment.date }}</td>
+                    <td>
+                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#cancelModal{{ appointment.id }}">İptal Et</button>
+                    </td>
+                </tr>
+                <div class="modal fade" id="cancelModal{{ appointment.id }}" tabindex="-1"
+                     aria-labelledby="cancelModal{{ appointment.id }}Label"
+                     aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="cancelModal{{ appointment.id }}Label">Randevi
+                                    İptali</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p>Randevuyu iptal etmek istediğinizden emin misiniz?</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+                                <form method="POST" action="{% url 'appointment_cancel' appointment.id %}">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-danger">İptal Et</button>
+                                    </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p class="alert alert-info">Randevunuz bulunmamaktadır.</p>
+    {% endif %}
+{% endblock %}

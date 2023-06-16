@@ -1,0 +1,10 @@
+python-dotenv
+black
+Django
+psycopg[binary]
+django-bootstrap5
+django-bootstrap-datepicker-plus
+requests
+xmltodict
+celery[redis]
+django-celery-beat

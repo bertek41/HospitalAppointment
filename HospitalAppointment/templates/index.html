@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+<head>
+    {% block title %}Hastane Randevu - Ana Sayfa{% endblock %}
+</head>
+
+{% block content %}
+    <div class="row mt-4">
+        <div class="col text-center">
+            <h1>Hoş Geldiniz</h1>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-lg-12 col-md-12 col-sm-12">
+            <div class="text-center">
+                <h4>Duyurular</h4>
+            </div>
+            <div class="row justify-content-center text-center">
+                {% for blog in blogs %}
+                    <div class="col-lg-4 col-md-4 col-sm-6 mb-3">
+                        <a href="#" class="btn btn-outline-success text-truncate w-100" data-bs-toggle="modal" data-bs-target="#blogModal{{ blog.id }}">{{ blog.title }}</a>
+                    </div>
+
+                    <div class="modal fade" id="blogModal{{ blog.id }}" tabindex="-1" aria-labelledby="blogModal{{ blog.id }}Label" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="blogModal{{ blog.id }}Label">{{ blog.title }}</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <p>{{ blog.content }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-lg-12 col-md-12 col-sm-12">
+            <div class="text-center">
+                <h4>Doktorlar</h4>
+            </div>
+            <div class="row justify-content-center">
+                {% for doctor in doctors %}
+                    <div class="col-lg-4 col-md-4 col-sm-6 mb-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ doctor.name }}</h5>
+                                <p class="card-text">{{ doctor.clinic }}</p>
+                                <p class="card-text">{{ doctor.hospital }}</p>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

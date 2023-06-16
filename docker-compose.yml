@@ -1,0 +1,90 @@
+version: '3.9'
+
+services:
+  db:
+    image: postgres:12-alpine
+    restart: always
+    environment:
+      - POSTGRES_DB=${POSTGRES_NAME}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./data:/var/lib/postgresql/data
+    networks:
+      - myNetwork
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    container_name: web
+    volumes:
+      - .:/code
+      - /requirements.txt
+    command: |
+      ./run.sh
+    ports:
+      - "80:80"
+      - "8080:8080"
+    environment:
+      - ENV_TARGET=${ENV_TARGET}
+      - POSTGRES_HOST=db
+      - POSTGRES_NAME=${POSTGRES_NAME}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    links:
+      - db:db
+    networks:
+      - myNetwork
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+  redis:
+    image: redis:7-alpine
+    container_name: 'redis'
+    restart: always
+    command: redis-server --save 20 1 --loglevel warning
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "6379:6379"
+    networks:
+      - myNetwork
+    volumes:
+      - ../data/redis:/data
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+  worker:
+    build: .
+    command: celery -A HospitalAppointment worker -l info -E --beat
+    networks:
+      - myNetwork
+    volumes:
+      - .:/code
+    environment:
+      - POSTGRES_HOST=db
+      - POSTGRES_DB=${POSTGRES_NAME}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+networks:
+  myNetwork:
+    driver: bridge
