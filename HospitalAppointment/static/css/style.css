@@ -1,0 +1,5 @@
+div.invalid-feedback { display: block !important; }
+
+.form-row {
+    overflow: visible;
+}
