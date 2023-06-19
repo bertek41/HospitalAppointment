@@ -3,7 +3,14 @@ from django.contrib import admin
 
 class AppointmentAdmin(admin.ModelAdmin):
     list_display = ("user", "doctor", "date", "get_clinic", "get_hospital")
-    search_fields = ("user__username", "user__first_name", "doctor__name", "date", "doctor__clinic", "doctor__hospital")
+    search_fields = (
+        "user__username",
+        "user__first_name",
+        "doctor__name",
+        "date",
+        "doctor__clinic",
+        "doctor__hospital",
+    )
     list_filter = ("user", "doctor", "date", "doctor__clinic", "doctor__hospital")
 
     def get_clinic(self, obj):

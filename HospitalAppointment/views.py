@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.contrib.auth import logout, authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
@@ -191,10 +193,23 @@ def get_dates(request):
 
 @login_required(login_url="/login/")
 def get_appointment(request):
-    form = GetAppointmentForm(current_user=request.user)
+    form_empty = GetAppointmentForm(current_user=request.user)
 
     if request.method == "POST":
         form = GetAppointmentForm(request.POST, current_user=request.user)
+
+        print(request.POST)
+        print("-----")
+        print(form.data)
+
+        try:
+            datetime.strptime(request.POST.get("date", None), "%d.%m.%Y %H:%M")
+        except ValueError:
+            return render(
+                request,
+                "get_appointment.html",
+                {"form": form_empty, "error": "Lütfen bir tarih seçiniz."},
+            )
         if form.is_valid():
             appointment = form.save(commit=False)
             appointment.user = request.user
@@ -213,7 +228,7 @@ def get_appointment(request):
                 {"form": form, "appointment": appointment},
             )
 
-    return render(request, "get_appointment.html", {"form": form})
+    return render(request, "get_appointment.html", {"form": form_empty})
 
 
 @login_required(login_url="/login/")
