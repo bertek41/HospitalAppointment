@@ -90,7 +90,7 @@ def get_cities(request):
     cities = []
 
     try:
-        cities = Doctor.objects.values("city").order_by('city').distinct()
+        cities = Doctor.objects.values("city").order_by("city").distinct()
     except Doctor.DoesNotExist:
         pass
 
@@ -104,7 +104,12 @@ def get_counties(request):
 
     if city_id:
         try:
-            counties = Doctor.objects.filter(city=city_id).values("county").order_by('county').distinct()
+            counties = (
+                Doctor.objects.filter(city=city_id)
+                .values("county")
+                .order_by("county")
+                .distinct()
+            )
         except Doctor.DoesNotExist:
             pass
 
@@ -122,7 +127,12 @@ def get_hospitals(request):
             doctor_ids = Doctor.objects.filter(
                 city=city_id, county=county_id
             ).values_list("id", flat=True)
-            hospitals = Doctor.objects.filter(id__in=doctor_ids).values("hospital").order_by('hospital').distinct()
+            hospitals = (
+                Doctor.objects.filter(id__in=doctor_ids)
+                .values("hospital")
+                .order_by("hospital")
+                .distinct()
+            )
         except Doctor.DoesNotExist:
             pass
 
@@ -141,7 +151,12 @@ def get_clinics(request):
             doctor_ids = Doctor.objects.filter(
                 city=city_id, county=county_id, hospital=hospital_id
             ).values_list("id", flat=True)
-            clinics = Doctor.objects.filter(id__in=doctor_ids).values("clinic").order_by('clinic').distinct()
+            clinics = (
+                Doctor.objects.filter(id__in=doctor_ids)
+                .values("clinic")
+                .order_by("clinic")
+                .distinct()
+            )
         except Doctor.DoesNotExist:
             pass
 
@@ -158,9 +173,16 @@ def get_doctors(request):
 
     if city_id and county_id and hospital_id and clinic_id:
         try:
-            doctors = Doctor.objects.filter(
-                city=city_id, county=county_id, hospital=hospital_id, clinic=clinic_id
-            ).order_by('name').distinct()
+            doctors = (
+                Doctor.objects.filter(
+                    city=city_id,
+                    county=county_id,
+                    hospital=hospital_id,
+                    clinic=clinic_id,
+                )
+                .order_by("name")
+                .distinct()
+            )
         except Doctor.DoesNotExist:
             pass
 
