@@ -90,7 +90,7 @@ def get_cities(request):
     cities = []
 
     try:
-        cities = Doctor.objects.values("city")
+        cities = Doctor.objects.values("city").order_by('city').distinct()
     except Doctor.DoesNotExist:
         pass
 
@@ -104,7 +104,7 @@ def get_counties(request):
 
     if city_id:
         try:
-            counties = Doctor.objects.filter(city=city_id).values("county")
+            counties = Doctor.objects.filter(city=city_id).values("county").order_by('county').distinct()
         except Doctor.DoesNotExist:
             pass
 
@@ -122,7 +122,7 @@ def get_hospitals(request):
             doctor_ids = Doctor.objects.filter(
                 city=city_id, county=county_id
             ).values_list("id", flat=True)
-            hospitals = Doctor.objects.filter(id__in=doctor_ids).values("hospital")
+            hospitals = Doctor.objects.filter(id__in=doctor_ids).values("hospital").order_by('hospital').distinct()
         except Doctor.DoesNotExist:
             pass
 
@@ -141,7 +141,7 @@ def get_clinics(request):
             doctor_ids = Doctor.objects.filter(
                 city=city_id, county=county_id, hospital=hospital_id
             ).values_list("id", flat=True)
-            clinics = Doctor.objects.filter(id__in=doctor_ids).values("clinic")
+            clinics = Doctor.objects.filter(id__in=doctor_ids).values("clinic").order_by('clinic').distinct()
         except Doctor.DoesNotExist:
             pass
 
@@ -160,7 +160,7 @@ def get_doctors(request):
         try:
             doctors = Doctor.objects.filter(
                 city=city_id, county=county_id, hospital=hospital_id, clinic=clinic_id
-            )
+            ).order_by('name').distinct()
         except Doctor.DoesNotExist:
             pass
 
@@ -208,7 +208,7 @@ def get_appointment(request):
             return render(
                 request,
                 "get_appointment.html",
-                {"form": form_empty, "error": "Lütfen bir tarih seçiniz."},
+                {"form": form_empty, "error": "Lütfen geçerli bir tarih seçiniz."},
             )
         if form.is_valid():
             appointment = form.save(commit=False)
